@@ -1,29 +1,26 @@
 ﻿using System.Linq.Expressions;
 
-namespace MagicVilla_API.Repositorio.IRepositorio
+namespace MagicVilla_API.Repository.IRepositorio
 {
 
 
-    //interfaz generico recibimos cualquier tipo de identidad
-    //Todos los maodelos que vamos agregando pueden utilizar repositorio
+
+    //Repositorio generico
     public interface IRepositorio<T> where T : class
     {
 
-        //Todos los maodelos que vayamos  agregando pueden utilizar el repositorio
+        //Metodos a inplementar en una clase
+        Task Crear(T entity);
+
+        Task<List<T>> ObtenerTodos(Expression<Func<T, bool>>? filter = null);
+
+        Task<T> Obtener(Expression<Func<T, bool>>? filter = null,  bool tracked = true);
 
 
-        //Metodos para nuestras clases
-        Task Crear(T ebtidad);
+        Task Remover(T entity);
 
-        Task<List<T>> ObtenerTodos(Expression<Func<T, bool>> ?filtro = null);
-
-        Task<List<T>> Obtener(Expression<Func<T, bool>> filtro = null, bool tracked = true);
-
-        Task Remove(T entidades);
-
-
-        Task  Grabar();
-
+        Task Grabar();
+        
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿using MagicVilla_API.Datos;
-using MagicVilla_API.Repositorio.IRepositorio;
+using MagicVilla_API.Repository.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -9,73 +9,85 @@ namespace MagicVilla_API.Repositorio
     {
 
 
+        //inyectar el DBContext 
+        private readonly ApplicationDbContext _dbContext;
+        //Conversion para la entidad
+        internal DbSet<T> dbSet;
 
-        //inyectar nuestro dbContext y no lo hacemos desde el controlador
-        private readonly ApplicationDbContext _db;
-        internal DbSet<T> dbSet; //variable interna
 
 
-        //Constructor
-        public Repositorio(ApplicationDbContext db)
+        //CONSTRUCTOR PARA INICIALIZAR 
+        public Repositorio(ApplicationDbContext dbContext)
         {
-            _db = db; //inicializamos
-            this.dbSet = _db.Set<T>(); //combertimos en una entidad
+            _dbContext = dbContext;
+            this.dbSet = _dbContext.Set<T>();
         }
 
-        //Agregar un nuevo registro cualcuier entidad u objecto(villa)
-        public async Task Crear(T entidad)
+
+
+
+
+        public async Task Crear(T entity)
         {
-            await dbSet.AddAsync(entidad);
+            await  dbSet.AddAsync(entity);
             await Grabar();
         }
 
 
-        //metodo grabar
+
+
         public async Task Grabar()
         {
-            await _db.SaveChangesAsync();
-        }
-
-
-        //recibe un filtro y retorna un solo registro
-        public async Task<List<T>> Obtener(Expression<Func<T, bool>> filtro = null, bool tracked = true)
-        {
-            //variable query
-            IQueryable<T> query = dbSet;
-            if (!tracked)
-            {
-                query = query.AsNoTracking();//si el parametro es falso
-            }
-            if (filtro != null)
-            {
-                query = query.Where(filtro); //expresion linq con where
-            }
-
-            // Utiliza Take(1) para limitar a un solo resultado y ToListAsync para convertirlo en lista
-            return await query.Take(1).ToListAsync();
+            await _dbContext.SaveChangesAsync();    
         }
 
 
 
-        //metodo para obtener toda mi lista
-        public async Task<List<T>> ObtenerTodos(Expression<Func<T, bool>>? filtro = null)
+
+        public async Task<T> Obtener(Expression<Func<T, bool>>? filter = null, bool tracked = true)
         {
-            IQueryable<T> query = dbSet; // Especificamos el tipo genérico T
-            if (filtro != null)
+           IQueryable<T> query = dbSet; //conversion a la entidad
+            if(!tracked)
             {
-                query = query.Where(filtro);
+                query = query.AsNoTracking();    
             }
 
-            //retorna una lista
+            //trabajar con el filtro
+            if(filter != null)
+            {
+                query = query.Where(filter);
+            }
+            //retornar el valor
+            return await query.FirstOrDefaultAsync();
+        }
+
+
+
+
+        public async Task<List<T>> ObtenerTodos(Expression<Func<T, bool>>? filter = null)
+        {
+            IQueryable<T> query = dbSet; //conversion a la entidad
+            //trabajar con el filtro
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
             return await query.ToListAsync();
         }
 
 
-        //metodo de eliminar
-        public async Task Remover(T entidades)
+
+        public async Task Remover(T entity)
         {
-            dbSet.Remove(entidades);
-            await Grabar();
+            dbSet.Remove(entity);
+           await Grabar();
         }
+
+
+
+
+
+
     }
 }
