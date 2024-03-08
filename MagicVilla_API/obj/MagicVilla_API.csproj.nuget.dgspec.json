@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla\\MagicVilla_API\\MagicVilla_API.csproj": {}
+    "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla_API\\MagicVilla_API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla\\MagicVilla_API\\MagicVilla_API.csproj": {
+    "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla_API\\MagicVilla_API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla\\MagicVilla_API\\MagicVilla_API.csproj",
+        "projectUniqueName": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla_API\\MagicVilla_API.csproj",
         "projectName": "MagicVilla_API",
-        "projectPath": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla\\MagicVilla_API\\MagicVilla_API.csproj",
+        "projectPath": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla_API\\MagicVilla_API.csproj",
         "packagesPath": "C:\\Users\\pobub\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla\\MagicVilla_API\\obj\\",
+        "outputPath": "C:\\Users\\pobub\\Documents\\API_Web_Restfull\\MagicVilla_API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pobub\\AppData\\Roaming\\NuGet\\NuGet.Config",

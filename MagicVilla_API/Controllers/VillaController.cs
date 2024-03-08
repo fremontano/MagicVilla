@@ -19,7 +19,7 @@ namespace MagicVilla_API.Controllers
         //VARIABLES PRIVADAS van con guion bajo _varPrivada
         private readonly ILogger<VillaController> _logger;
         //inyectar para guardar en la  base de datos desde las rutas de mi api
-        private readonly IVillaRepositorio _villaRepositorio; //remplazamos el dbContex por la interfaz villa repositorio
+        private readonly IVillaRepositorio _villaRepositorio; //remplazamos el dbContext por la interfaz villa repositorio
         //para recorrer con el map
         private readonly IMapper _mapper;
 
@@ -132,29 +132,30 @@ namespace MagicVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task <IActionResult> DeleteVilla(int id)
+        public async Task<IActionResult> DeleteVilla(int id)
         {
 
-            // si no envia el id de manera apropiado
+            // si no envía el id de manera apropiada
             if (id == 0)
             {
                 return BadRequest();
             }
-            //no coincide el id que tengamos en la lista
+            // busca la villa por ID
             var villa = await _villaRepositorio.Obtener(v => v.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
 
-            //eliminar recien el objecto con el id correspondiente
-            _logger.LogInformation("Se elimino un registro de la lista");
+            // elimina la villa del repositorio
+            _logger.LogInformation($"Se eliminó la villa con ID: {id}");
+
             //le envio de mi variable villa
             _villaRepositorio.Remover(villa);
-        
-
             return NoContent();
+
         }
+
 
 
 
@@ -162,20 +163,18 @@ namespace MagicVilla_API.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDto updateVillaDto)
+        public async Task<IActionResult>UpdateVilla(int id, [FromBody] VillaUpdateDto updateDto)
         {
-            if (updateVillaDto == null || id != updateVillaDto.Id)
+            if (updateDto == null || id!= updateDto.Id)
             {
                 return BadRequest();
             }
 
-
             // Mapear el DTO de actualización a la entidad de dominio (Villa)
-            var modelo = _mapper.Map<Villa>(updateVillaDto);
+            Villa modelo = _mapper.Map<Villa>(updateDto);
 
             // Actualizar la villa en el repositorio
             await _villaRepositorio.Actualizar(modelo);
-
             // Retornar un código de estado 204 No Content para indicar que la operación se realizó con éxito
             return NoContent();
         }
@@ -186,8 +185,8 @@ namespace MagicVilla_API.Controllers
         //actualiza de mi objecto una sola propiedad
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDto> pacthDto)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
+        public async Task<IActionResult> UpdateVilla(int id, JsonPatchDocument<VillaUpdateDto> pacthDto)
         {
             if (pacthDto == null || id == 0)
             {
@@ -214,10 +213,11 @@ namespace MagicVilla_API.Controllers
             }
 
             // mapeo del DTO actualizado de vuelta a la villa original
-            _mapper.Map(villaDto, villa);
+            var modelo =  _mapper.Map(villaDto, villa);
 
             // actualizar la villa en el repositorio
-            await _villaRepositorio.Actualizar(villa);
+            _villaRepositorio.Actualizar(modelo);
+             
 
             return NoContent();
         }
