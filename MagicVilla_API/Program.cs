@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 //agregar mi nuevo servicios para la cadena de conecion de la base de datos
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConection"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 //servicio map para recorrer mis objecto

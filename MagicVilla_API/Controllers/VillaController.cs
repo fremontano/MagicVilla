@@ -182,45 +182,45 @@ namespace MagicVilla_API.Controllers
 
 
 
-        //actualiza de mi objecto una sola propiedad
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
-        public async Task<IActionResult> UpdateVilla(int id, JsonPatchDocument<VillaUpdateDto> pacthDto)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateVilla(int id, JsonPatchDocument<VillaUpdateDto> patchDto)
         {
-            if (pacthDto == null || id == 0)
+            if (patchDto == null || id == 0)
             {
                 return BadRequest();
             }
-            //capturar el registro antes de grabarlo
-            var villa = await _villaRepositorio.Obtener(v => v.Id == id, tracked: false);
+
+            // Capturar el registro antes de grabarlo
+            var villa = await _villaRepositorio.Obtener(v => v.Id == id, tracked: true);
 
             if (villa == null)
             {
                 return BadRequest();
             }
 
-            // mapeo de la villa a un DTO
+            // Mapeo de la villa a un DTO
             var villaDto = _mapper.Map<VillaUpdateDto>(villa);
 
-            // aplicar los cambios parciales del JsonPatchDocument al DTO
-            pacthDto.ApplyTo(villaDto, ModelState);
+            // Aplicar los cambios parciales del JsonPatchDocument al DTO
+            patchDto.ApplyTo(villaDto, ModelState);
 
-            // validar el modelo después de aplicar los cambios parciales
+            // Validar el modelo después de aplicar los cambios parciales
             if (!TryValidateModel(villaDto))
             {
                 return BadRequest(ModelState);
             }
 
-            // mapeo del DTO actualizado de vuelta a la villa original
-            var modelo =  _mapper.Map(villaDto, villa);
+            // Mapeo del DTO actualizado de vuelta a la villa original
+            _mapper.Map(villaDto, villa);
 
-            // actualizar la villa en el repositorio
-            _villaRepositorio.Actualizar(modelo);
-             
+            // Actualizar la villa en el repositorio
+            _villaRepositorio.Actualizar(villa);
 
             return NoContent();
         }
+
 
 
 
